@@ -1,95 +1,53 @@
 #include "variadic_functions.h"
+#include <stdio.h>
+#include <stdarg.h>
 
 /**
- * _char - Prints a character
- * @args: character to print (from va_list)
- *
- * Return: void
- */
-
-void _char(va_list args)
-{
-	printf("%c", va_arg(args, int));
-}
-
-/**
- * _int - Prints an integer
- * @args: integer to print (from va_list)
- *
- * Return: void
- */
-
-void _int(va_list args)
-{
-	printf("%d", va_arg(args, int));
-}
-
-/**
- * _float - Prints a float number
- * @args: number to print (from va_list)
- *
- * Return: void
- */
-
-void _float(va_list args)
-{
-	printf("%f", va_arg(args, double));
-}
-
-/**
- * _str - Prints a string
- * @args: string to print (from va_list)
- *
- * Return: void
- */
-
-void _str(va_list args)
-{
-	char *str = va_arg(args, char *);
-
-	printf("%s", str == NULL ? "(nil)" : str);
-}
-
-/**
- * print_all - Prints argument depending on its format
- * @format: string of format chars
- *
- * Return: void
+ * print_all - a function that prints anything.
+ * @format: a list of types of arguments passed to the function.
+ * Return: Just Nothing.
  */
 
 void print_all(const char * const format, ...)
 {
-	int i;
-	int j;
-	va_list args;
+	int indx, findic;
+	char *str;
+	va_list myapx;
 
-	_struct arr[] = {
-		{'c', _char},
-		{'i', _int},
-		{'f', _float},
-		{'s', _str},
-	};
+	indx = 0;
 
-	va_start(args, format);
-
-	i = 0;
-
-	while (format && format[i])
+	va_start(myapx, format);
+	while (format != NULL && format[indx] != '\0')
 	{
-		j = 0;
-		while (j < 5)
+		switch (format[indx])
 		{
-			if (format[i] == arr[j].c)
-			{
-				arr[j].f(args);
-				if (format[i + 1])
-					printf(", ");
+			case 'i':
+				printf("%i", va_arg(myapx, int));
+				findic = 0;
 				break;
-			}
-			j++;
+			case 's':
+				str = va_arg(myapx, char*);
+				if (str == NULL)
+					str = "(nil)";
+				printf("%s", str);
+				findic = 0;
+				break;
+			case 'c':
+				printf("%c", va_arg(myapx, int));
+				findic = 0;
+				break;
+			case 'f':
+				printf("%f", va_arg(myapx, double));
+				findic = 0;
+				break;
+			default:
+				findic = 1;
+				break;
 		}
-		i++;
+		if (findic == 0 && format[indx + 1] != '\0')
+			printf(", ");
+		indx++;
 	}
 	printf("\n");
-	va_end(args);
+	va_end(myapx);
 }
